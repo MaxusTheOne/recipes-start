@@ -15,6 +15,10 @@ interface Recipe {
   ingredients: string;
   source: string;
 }
+interface Category {
+  id: number | null;
+  name: string;
+}
 
 interface Info {
   reference: string;
@@ -23,17 +27,14 @@ interface Info {
 }
 
 let categories: Array<string> = [];
+//@ts-ignore
+// eslint-disable-next-line prefer-const
 let recipes: Array<Recipe> = [];
 let cacheTime: number = 0;
 let info: Info | null = null;
 
-async function getCategories(): Promise<Array<string>> {
-  if (categories.length > 0 && (Date.now() - cacheTime) > 8000) return [...categories];
-  const res = await fetch(CATEGORIES_URL).then(handleHttpErrors);
-  categories = [...res];
-  cacheTime = Date.now();
-  return categories;
-}
+
+//  ---  Recipes  ---
 async function getRecipes(category: string | null): Promise<Array<Recipe>> {
   //if (recipes.length > 0) return [...recipes];
   console.log("category", category);
@@ -55,6 +56,23 @@ async function deleteRecipe(id: number): Promise<Recipe> {
   return fetch(`${RECIPE_URL}/${id}`, options).then(handleHttpErrors);
 }
 
+
+// ---  Categories  ---
+async function getCategories(): Promise<Array<string>> {
+  if (categories.length > 0 && (Date.now() - cacheTime) > 8000) return [...categories];
+  const res = await fetch(CATEGORIES_URL).then(handleHttpErrors);
+  categories = [...res];
+  cacheTime = Date.now();
+  return categories;
+}
+async function addCategory(newCategory: Category): Promise<Category> {
+  const method = newCategory.id ? "PUT" : "POST";
+  const options = makeOptions(method, newCategory);
+  const URL = newCategory.id ? `${CATEGORIES_URL}/${newCategory.id}` : CATEGORIES_URL;
+  return fetch(URL, options).then(handleHttpErrors);
+}
+
+
 async function getInfo(): Promise<Info> {
   if (!info) {
   info = await fetch(INFO_URL).then(handleHttpErrors) as Info;
@@ -63,6 +81,6 @@ async function getInfo(): Promise<Info> {
   return info;
 }
 
-export type { Recipe, Info };
+export type { Recipe, Info, Category};
 // eslint-disable-next-line react-refresh/only-export-components
-export { getCategories, getRecipes, getRecipe, addRecipe, deleteRecipe, getInfo };
+export { getCategories, getRecipes, getRecipe, addRecipe, deleteRecipe, getInfo, addCategory};
