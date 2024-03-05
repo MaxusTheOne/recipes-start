@@ -24,11 +24,14 @@ interface Info {
 
 let categories: Array<string> = [];
 let recipes: Array<Recipe> = [];
+let cacheTime: number = 0;
+let info: Info | null = null;
 
 async function getCategories(): Promise<Array<string>> {
-  if (categories.length > 0) return [...categories];
+  if (categories.length > 0 && (Date.now() - cacheTime) > 8000) return [...categories];
   const res = await fetch(CATEGORIES_URL).then(handleHttpErrors);
   categories = [...res];
+  cacheTime = Date.now();
   return categories;
 }
 async function getRecipes(category: string | null): Promise<Array<Recipe>> {
@@ -53,7 +56,11 @@ async function deleteRecipe(id: number): Promise<Recipe> {
 }
 
 async function getInfo(): Promise<Info> {
-  return fetch(INFO_URL).then(handleHttpErrors);
+  if (!info) {
+  info = await fetch(INFO_URL).then(handleHttpErrors) as Info;
+  return info;
+  }
+  return info;
 }
 
 export type { Recipe, Info };

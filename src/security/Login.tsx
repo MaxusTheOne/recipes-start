@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { User } from "../services/authFacade";
 import "./login.css";
+import { useAuth } from "./AuthProvider";
 
 const Login = () => {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -29,7 +30,7 @@ const Login = () => {
        .then(() => {
          navigate(from, { replace: true });
        })
-       .catch((err) => {
+       .catch((err: SetStateAction<null>) => {
          setErr(err);
        });
   }
