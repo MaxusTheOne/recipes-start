@@ -22,13 +22,14 @@ const Login = () => {
     const formData = new FormData(event.currentTarget);
     const user = Object.fromEntries(formData) as unknown as User;
 
+   
     setErr(null);
-    console.log(err);
-    alert("Login: " + JSON.stringify(user));
+    console.log("Errors: "+err);
      auth
        .signIn(user)
        .then(() => {
          navigate(from, { replace: true });
+      
        })
        .catch((err: SetStateAction<null>) => {
          setErr(err);

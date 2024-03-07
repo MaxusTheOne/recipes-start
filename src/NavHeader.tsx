@@ -21,7 +21,7 @@ export default function NavHeader() {
 
           { <NavLink to="/recipes">Recipes</NavLink> }
         </li>
-        {auth.isLoggedInAs(["ADMIN"]) &&
+        {auth.isLoggedInAs(["ADMIN", "ADMIN USER"]) &&
         <li>
 
           { <NavLink to="/add">+Recipe</NavLink> }

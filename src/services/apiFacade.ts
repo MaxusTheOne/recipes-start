@@ -47,12 +47,12 @@ async function getRecipe(id: number): Promise<Recipe> {
 }
 async function addRecipe(newRecipe: Recipe): Promise<Recipe> {
   const method = newRecipe.id ? "PUT" : "POST";
-  const options = makeOptions(method, newRecipe);
+  const options = makeOptions(method, newRecipe, true);
   const URL = newRecipe.id ? `${RECIPE_URL}/${newRecipe.id}` : RECIPE_URL;
   return fetch(URL, options).then(handleHttpErrors);
 }
 async function deleteRecipe(id: number): Promise<Recipe> {
-  const options = makeOptions("DELETE", null);
+  const options = makeOptions("DELETE", null, true);
   return fetch(`${RECIPE_URL}/${id}`, options).then(handleHttpErrors);
 }
 
@@ -66,10 +66,11 @@ async function getCategories(): Promise<Array<string>> {
   return categories;
 }
 async function addCategory(newCategory: Category): Promise<Category> {
-  const method = newCategory.id ? "PUT" : "POST";
-  const options = makeOptions(method, newCategory);
+
+  const options = makeOptions("POST", newCategory, true);
+
   const URL = newCategory.id ? `${CATEGORIES_URL}/${newCategory.id}` : CATEGORIES_URL;
-  return fetch(URL, options).then(handleHttpErrors);
+  return await fetch(URL, options).then(handleHttpErrors);
 }
 
 
